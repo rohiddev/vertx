@@ -1,8 +1,15 @@
-FROM fabric8/java-jboss-openjdk8-jdk:1.0.13
-
-ENV JAVA_APP_JAR hola-swarm.jar
-ENV AB_OFF true
+FROM fabric8/java-alpine-openjdk8-jre
 
 EXPOSE 8080
 
-ADD target/hola-swarm.jar /app/
+# Copy dependencies
+COPY target/dependency/* /deployment/libs/
+
+# Copy classes
+COPY target/classes /deployment/classes
+
+ENV JAVA_APP_DIR=/deployment
+ENV JAVA_LIB_DIR=/deployment/libs
+ENV JAVA_CLASSPATH=${JAVA_APP_DIR}/classes:${JAVA_LIB_DIR}/*
+ENV JAVA_OPTIONS="-Dvertx.cacheDirBase=/tmp"
+ENV JAVA_MAIN_CLASS="com.rohid.controller.MyFirstVerticle"
