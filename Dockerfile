@@ -1,11 +1,8 @@
-FROM openjdk:8-jre-alpine                                          
-ENV VERTICLE_FILE hello-verticle-fatjar-3.0.0-SNAPSHOT-fat.jar      
-# Set the location of the verticles
-ENV VERTICLE_HOME /usr/verticles
+FROM fabric8/java-jboss-openjdk8-jdk:1.0.13
+
+ENV JAVA_APP_JAR hola-swarm.jar
+ENV AB_OFF true
+
 EXPOSE 8080
-# Copy your fat jar to the container
-COPY target/$VERTICLE_FILE $VERTICLE_HOME/                          
-# Launch the verticle
-WORKDIR $VERTICLE_HOME
-ENTRYPOINT ["sh", "-c"]
-CMD ["exec java -jar $VERTICLE_FILE"]  
+
+ADD target/hola-swarm.jar /app/
