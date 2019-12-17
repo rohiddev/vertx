@@ -1,15 +1,16 @@
-FROM fabric8/java-alpine-openjdk8-jre
+FROM java:8-jre
+
+ENV VERTICLE_FILE hello-verticle-fatjar-3.8.4-fat.jar
+
+# Set the location of the verticles
+ENV VERTICLE_HOME /usr/verticles
 
 EXPOSE 8080
 
-# Copy dependencies
-COPY target/dependency/* /deployment/libs/
+# Copy your fat jar to the container
+COPY target/$VERTICLE_FILE $VERTICLE_HOME/
 
-# Copy classes
-COPY target/classes /deployment/classes
-
-ENV JAVA_APP_DIR=/deployment
-ENV JAVA_LIB_DIR=/deployment/libs
-ENV JAVA_CLASSPATH=${JAVA_APP_DIR}/classes:${JAVA_LIB_DIR}/*
-ENV JAVA_OPTIONS="-Dvertx.cacheDirBase=/tmp"
-ENV JAVA_MAIN_CLASS="com.rohid.controller.MyFirstVerticle"
+# Launch the verticle
+WORKDIR $VERTICLE_HOME
+ENTRYPOINT ["sh", "-c"]
+CMD ["exec java -jar $VERTICLE_FILE"]
