@@ -1,16 +1,9 @@
-FROM java:8-jre
+FROM fabric8/java-jboss-openjdk8-jdk:1.5.1
 
-ENV VERTICLE_FILE hello-verticle-fatjar-3.8.4-fat.jar
-
-# Set the location of the verticles
-ENV VERTICLE_HOME /usr/verticles
+ENV JAVA_APP_JAR hello-verticle-fatjar-3.8.4-fat.jar
+ENV AB_ENABLED off
+ENV JAVA_OPTIONS -Xmx512m
 
 EXPOSE 8080
 
-# Copy your fat jar to the container
-COPY target/$VERTICLE_FILE $VERTICLE_HOME/
-
-# Launch the verticle
-WORKDIR $VERTICLE_HOME
-ENTRYPOINT ["sh", "-c"]
-CMD ["exec java -jar $VERTICLE_FILE"]
+ADD target/hello-verticle-fatjar-3.8.4-fat.jar /deployments/
